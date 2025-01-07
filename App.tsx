@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -15,43 +14,42 @@ import {
   Text,
   useColorScheme,
   View,
+  TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
+const IconComponent = Icon as unknown as React.ComponentType<{
+  name: string;
+  size: number;
+  color: string;
 }>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
+function FeatureCard({title, icon, onPress}: {
+  title: string;
+  icon: string;
+  onPress: () => void;
+}): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={styles.sectionContainer}>
+    <TouchableOpacity
+      style={[
+        styles.card,
+        {
+          backgroundColor: isDarkMode ? '#333' : '#fff',
+        },
+      ]}
+      onPress={onPress}>
+      <IconComponent name={icon} size={40} color={isDarkMode ? '#fff' : '#333'} />
       <Text
         style={[
-          styles.sectionTitle,
+          styles.cardTitle,
           {
-            color: isDarkMode ? Colors.white : Colors.black,
+            color: isDarkMode ? '#fff' : '#333',
           },
         ]}>
         {title}
       </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -59,7 +57,13 @@ function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? '#000' : '#f5f5f5',
+    flex: 1,
+  };
+
+  const handleFeaturePress = (feature: string) => {
+    console.log(`Navigate to ${feature}`);
+    // TODO: Add navigation logic
   };
 
   return (
@@ -71,25 +75,36 @@ function App(): React.JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+        <View style={styles.header}>
+          <Text style={[styles.headerTitle, {color: isDarkMode ? '#fff' : '#333'}]}>
+            工具库
+          </Text>
+        </View>
+        <View style={styles.container}>
+          <View style={styles.row}>
+            <FeatureCard
+              title="会议纪要"
+              icon="event-note"
+              onPress={() => handleFeaturePress('会议纪要')}
+            />
+            <FeatureCard
+              title="日程提醒"
+              icon="access-time"
+              onPress={() => handleFeaturePress('日程提醒')}
+            />
+          </View>
+          <View style={styles.row}>
+            <FeatureCard
+              title="AI机器人"
+              icon="android"
+              onPress={() => handleFeaturePress('AI机器人')}
+            />
+            <FeatureCard
+              title="扫码识别"
+              icon="qr-code-scanner"
+              onPress={() => handleFeaturePress('扫码识别')}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -97,21 +112,41 @@ function App(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  header: {
+    padding: 20,
+    marginBottom: 20,
   },
-  sectionTitle: {
-    fontSize: 24,
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+  container: {
+    padding: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  card: {
+    width: '48%',
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  cardTitle: {
+    marginTop: 12,
+    fontSize: 16,
     fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
   },
 });
 
